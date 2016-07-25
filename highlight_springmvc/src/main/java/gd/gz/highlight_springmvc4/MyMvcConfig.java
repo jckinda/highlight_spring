@@ -3,8 +3,11 @@ package gd.gz.highlight_springmvc4;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -52,5 +55,20 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/index1").setViewName("index");
 		registry.addViewController("/index2").setViewName("index");
+		registry.addViewController("/toUpload").setViewName("upload");
+	}
+	
+	//路径匹配可以摞到路径上.后面嘅字符串
+	@Override
+	public void configurePathMatch(PathMatchConfigurer configurer) {
+		configurer.setUseSuffixPatternMatch(false);
+	}
+	
+	
+	@Bean
+	public MultipartResolver multipartResolver(){
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+		multipartResolver.setMaxUploadSize(10000000);
+		return multipartResolver;
 	}
 }
