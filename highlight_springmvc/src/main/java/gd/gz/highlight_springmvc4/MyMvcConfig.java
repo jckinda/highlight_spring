@@ -1,8 +1,12 @@
 package gd.gz.highlight_springmvc4;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,9 +20,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import gd.gz.highlight_springmvc4.interceptor.DemoInterceptor;
+import gd.gz.highlight_springmvc4.web.MyMessageConverter;
 
 @Configuration
 @EnableWebMvc
+@EnableScheduling
 @ComponentScan("gd.gz.highlight_springmvc4")
 public class MyMvcConfig extends WebMvcConfigurerAdapter {
 
@@ -56,6 +62,9 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("/index1").setViewName("index");
 		registry.addViewController("/index2").setViewName("index");
 		registry.addViewController("/toUpload").setViewName("upload");
+		registry.addViewController("/converter").setViewName("/converter");
+		registry.addViewController("/sse").setViewName("sse");
+		registry.addViewController("/async").setViewName("/async");
 	}
 	
 	//路径匹配可以摞到路径上.后面嘅字符串
@@ -70,5 +79,15 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
 		multipartResolver.setMaxUploadSize(10000000);
 		return multipartResolver;
+	}
+	
+	@Bean
+	public MyMessageConverter converter(){
+		return new MyMessageConverter();
+	}
+	
+	@Override
+	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(converter());
 	}
 }
