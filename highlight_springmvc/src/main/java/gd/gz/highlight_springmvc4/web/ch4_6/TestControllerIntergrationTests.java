@@ -61,4 +61,12 @@ public class TestControllerIntergrationTests {
 				.andExpect(content().contentType("text/plain;charset=utf-8"))
 				.andExpect(content().string(demoService.saySonething()));
 	}
+	
+	
+	@Test
+	public void testNormalController1() throws Exception {
+		mockMvc.perform(get("/normal")).andExpect(status().isOk()).andExpect(view().name("page"))
+				.andExpect(forwardedUrl("/WEB-INF/classes/views/page.jsp"))
+				.andExpect(model().attribute("msg", demoService.saySonething()));
+	}
 }
